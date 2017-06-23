@@ -291,7 +291,7 @@ var DrawHelper = (function() {
                                 depthTest : {
                                     enabled : true
                                 },
-                                lineWidth : Math.min(this.strokeWidth || 4.0, context._aliasedLineWidthRange[1])
+                                lineWidth : Math.min(this.strokeWidth || 4.0 )
                             }
                         })
                     });
@@ -975,11 +975,7 @@ var DrawHelper = (function() {
         var mouseHandler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
 
         function updateExtent(value) {
-            if(extent == null) {
-                extent = new Cesium.RectanglePrimitive();
-                extent.asynchronous = false;
-                primitives.add(extent);
-            }
+            if(extent == null) { extent = new DrawHelper.ExtentPrimitive({ extent : value, material : options.material, }); extent.asynchronous = false; primitives.add(extent); } extent.setExtent(value);
             extent.rectangle = value;
             // update the markers
             var corners = getExtentCorners(value);
@@ -1426,7 +1422,9 @@ var DrawHelper = (function() {
                             function (movement) {
                                 var pickedObject = scene.pick(movement.position);
                                 // disable edit if pickedobject is different or not an object
-                                if(!(pickedObject && !pickedObject.isDestroyed() && pickedObject.primitive)) {
+                                try{if(!(pickedObject && !pickedObject.isDestroyed() && pickedObject.primitive)) {
+                                    extent.setEditMode(false);
+                                }}catch(e){
                                     extent.setEditMode(false);
                                 }
                             }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
