@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <title>DrawHelper - a shape editor plugin for Cesium</title>
-    <script src="Cesium/Cesium.js"></script>
+    <script src="Cesium-1.34/Cesium.js"></script>
     <script src="DrawHelper.js"></script>
     <style>
-        @import url(Cesium/Widgets/CesiumWidget/CesiumWidget.css);
+        @import url(Cesium-1.34/Widgets/widgets.css);
         @import url(DrawHelper.css);
         #cesiumContainer {
             position: absolute;
@@ -56,17 +56,8 @@
 
     function start() {
         // create the almighty cesium widget
-        var cesiumWidget = new Cesium.CesiumWidget('cesiumContainer', {scene3DOnly: true});
+        var cesiumWidget = new Cesium.Viewer('cesiumContainer');
         var scene = cesiumWidget.scene;
-
-        // add terrain elevation
-        var cesiumTerrainProviderHeightmaps = new Cesium.CesiumTerrainProvider({
-            url : 'https://cesiumjs.org/tilesets/terrain/smallterrain',
-            credit : 'Terrain data courtesy Analytical Graphics, Inc.'
-        });
-
-        scene.terrainProvider = cesiumTerrainProviderHeightmaps;
-
         // start the draw helper to enable shape creation and editing
         var drawHelper = new DrawHelper(cesiumWidget);
         var toolbar = drawHelper.addToolbar(document.getElementById("toolbar"), {

@@ -1,5 +1,8 @@
-cesium-drawhelper
+Fixed version cesium-drawhelper. Cesium 1.34 compatible. Tested & worked.
 ================
+
+
+[Original repo]( https://github.com/leforthomas/cesium-drawhelper)
 
 DrawHelper: A very early stage shape editor for Cesium. Currently limited to 2D and simple shapes.
 
