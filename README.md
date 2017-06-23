@@ -6,7 +6,7 @@ Fixed version cesium-drawhelper. Cesium 1.34 compatible. Tested & worked.
 
 DrawHelper: A very early stage shape editor for Cesium. Currently limited to 2D and simple shapes.
 
-Cesium version: Tested against Cesium v1.0.
+Cesium version: Tested against ~~Cesium v1.0.~~ **Cesium 1.34**
 
 License: Apache 2.0. Free for commercial and non-commercial use. See LICENSE.md.
 
