@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
 <head>
     <title>DrawHelper - a shape editor plugin for Cesium</title>
-    <script src="Cesium-1.34/Build/Cesium/Cesium.js"></script>
-    <!--?<script src="Cesium/Cesium.js"></script>-->
+    <!--?<script src="Cesium-1.34/Build/Cesium/Cesium.js"></script>-->
+    <script src="Cesium/Cesium.js"></script>
     <script src="DrawHelper.js"></script>
     <style>
-        @import url(Cesium-1.34/Build/Cesium/Widgets/widgets.css);
-        /*@import url(Cesium/Widgets/widgets.css);*/
+        /*@import url(Cesium-1.34/Build/Cesium/Widgets/widgets.css);*/
+        @import url(Cesium/Widgets/widgets.css);
         @import url(DrawHelper.css);
+
         #cesiumContainer {
             position: absolute;
             top: 0px;
@@ -20,6 +24,7 @@
             padding: 0;
             font-family: sans-serif;
         }
+
         #toolbar {
             position: absolute;
             top: 0px;
@@ -29,6 +34,7 @@
             padding: 0px;
             background: white;
         }
+
         #logging {
             position: absolute;
             bottom: 0px;
@@ -51,15 +57,18 @@
 <div id="cesiumContainer"></div>
 <div id="toolbar">
 </div>
+<div id="test"></div>
 <div id="logging">
 </div>
 
 <script>
-    var viewer ;
+    var viewer;
 
     function start() {
         // create the almighty cesium widget
         var cesiumWidget = new Cesium.Viewer('cesiumContainer');
+
+
         viewer = cesiumWidget;
         var scene = cesiumWidget.scene;
         // start the draw helper to enable shape creation and editing
@@ -67,25 +76,25 @@
         var toolbar = drawHelper.addToolbar(document.getElementById("toolbar"), {
             buttons: [/*'marker', */'polyline', 'polygon', 'circle', 'extent']
         });
-        toolbar.addListener('markerCreated', function(event) {
-            loggingMessage('Marker created at ' + event.position.toString());
-            // create one common billboard collection for all billboards
-            var b = new Cesium.BillboardCollection();
-            scene.primitives.add(b);
-            var billboard = b.add({
-                show : true,
-                position : event.position,
-                pixelOffset : new Cesium.Cartesian2(0, 0),
-                eyeOffset : new Cesium.Cartesian3(0.0, 0.0, 0.0),
-                horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
-                verticalOrigin : Cesium.VerticalOrigin.CENTER,
-                scale : 1.0,
-                image: './img/glyphicons_242_google_maps.png',
-                color : new Cesium.Color(1.0, 1.0, 1.0, 1.0)
-            });
-            billboard.setEditable();
-        });
-        toolbar.addListener('polylineCreated', function(event) {
+        // toolbar.addListener('markerCreated', function(event) {
+        //     loggingMessage('Marker created at ' + event.position.toString());
+        //     // create one common billboard collection for all billboards
+        //     var b = new Cesium.BillboardCollection();
+        //     scene.primitives.add(b);
+        //     var billboard = b.add({
+        //         show : true,
+        //         position : event.position,
+        //         pixelOffset : new Cesium.Cartesian2(0, 0),
+        //         eyeOffset : new Cesium.Cartesian3(0.0, 0.0, 0.0),
+        //         horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
+        //         verticalOrigin : Cesium.VerticalOrigin.CENTER,
+        //         scale : 1.0,
+        //         image: './img/glyphicons_242_google_maps.png',
+        //         color : new Cesium.Color(1.0, 1.0, 1.0, 1.0)
+        //     });
+        //     billboard.setEditable();
+        // });
+        toolbar.addListener('polylineCreated', function (event) {
             loggingMessage('Polyline created with ' + event.positions.length + ' points');
             var polyline = new DrawHelper.PolylinePrimitive({
                 positions: event.positions,
@@ -94,58 +103,71 @@
             });
             scene.primitives.add(polyline);
             polyline.setEditable();
-            polyline.addListener('onEdited', function(event) {
+            polyline.addListener('onEdited', function (event) {
                 loggingMessage('Polyline edited, ' + event.positions.length + ' points');
             });
 
         });
-        toolbar.addListener('polygonCreated', function(event) {
+        toolbar.addListener('polygonCreated', function (event) {
             loggingMessage('Polygon created with ' + event.positions.length + ' points');
             var polygon = new DrawHelper.PolygonPrimitive({
                 positions: event.positions,
-                material : Cesium.Material.fromType('Checkerboard')
+                material: Cesium.Material.fromType('Checkerboard')
             });
             console.log(polygon)
             scene.primitives.add(polygon);
             polygon.setEditable();
-            polygon.addListener('onEdited', function(event) {
+            polygon.addListener('onEdited', function (event) {
                 loggingMessage('Polygon edited, ' + event.positions.length + ' points');
             });
 
         });
-        toolbar.addListener('circleCreated', function(event) {
+        toolbar.addListener('circleCreated', function (event) {
+            console.log(event);
             loggingMessage('Circle created: center is ' + event.center.toString() + ' and radius is ' + event.radius.toFixed(1) + ' meters');
             var circle = new DrawHelper.CirclePrimitive({
                 center: event.center,
                 radius: event.radius,
                 material: Cesium.Material.fromType(Cesium.Material.RimLightingType)
             });
-            console.log(circle)
+            // console.log(circle)
             scene.primitives.add(circle);
             circle.setEditable();
-            circle.addListener('onEdited', function(event) {
+            circle.addListener('onEdited', function (event) {
                 loggingMessage('Circle edited: radius is ' + event.radius.toFixed(1) + ' meters');
             });
         });
-        toolbar.addListener('extentCreated', function(event) {
+        toolbar.addListener('extentCreated', function (event) {
+            console.log(event)
             var extent = event.extent;
             loggingMessage('Extent created (N: ' + extent.north.toFixed(3) + ', E: ' + extent.east.toFixed(3) + ', S: ' + extent.south.toFixed(3) + ', W: ' + extent.west.toFixed(3) + ')');
             var extentPrimitive = new DrawHelper.ExtentPrimitive({
                 extent: extent,
                 material: Cesium.Material.fromType(Cesium.Material.StripeType)
             });
-            console.log(extentPrimitive)
+            // console.log(extentPrimitive)
+            // console.log(extent)
             scene.primitives.add(extentPrimitive);
             extentPrimitive.setEditable();
-            extentPrimitive.addListener('onEdited', function(event) {
+            extentPrimitive.addListener('onEdited', function (event) {
+                console.log(event);
                 loggingMessage('Extent edited: extent is (N: ' + event.extent.north.toFixed(3) + ', E: ' + event.extent.east.toFixed(3) + ', S: ' + event.extent.south.toFixed(3) + ', W: ' + event.extent.west.toFixed(3) + ')');
             });
         });
 
         var logging = document.getElementById('logging');
+
         function loggingMessage(message) {
             logging.innerHTML = message;
         }
+
+        new Cesium.ScreenSpaceEventHandler(scene.canvas).setInputAction(function (event) {
+
+            var earthPosition = viewer.scene.pickPosition(event.position);
+            // `earthPosition` will be undefined if our mouse is not over the globe.
+            console.log(earthPosition)
+
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     }
 
